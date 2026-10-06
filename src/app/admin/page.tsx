@@ -118,7 +118,7 @@ export default function AdminPage() {
 
   const handleEliminarTurno = async (id: string) => {
     if (!window.confirm('¿Estás seguro de que querés eliminar este turno? La acción no se puede deshacer.')) return;
-    
+
     const { error } = await supabase.from('turnos').delete().eq('id', id);
     if (!error) {
       setTurnos(prev => prev.filter(t => t.id !== id));
@@ -180,7 +180,7 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-lime-400 text-graphite-950 font-bold py-3.5 rounded-xl hover:bg-lime-500 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:pointer-events-none mt-2 shadow-lg shadow-lime-400/10"
+              className="w-full bg-lime-400 text-graphite-950 font-bold py-3.5 cursor-pointer rounded-xl hover:bg-lime-500 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:pointer-events-none mt-2 shadow-lg shadow-lime-400/10"
             >
               {loading ? 'Validando...' : 'Ingresar al Panel'}
             </button>
@@ -196,7 +196,7 @@ export default function AdminPage() {
   }
 
   // PANEL DE ADMINISTRACIÓN
-  
+
   const handlePrev = () => setCurrentDate(d => viewMode === 'mes' ? subMonths(d, 1) : subWeeks(d, 1));
   const handleNext = () => setCurrentDate(d => viewMode === 'mes' ? addMonths(d, 1) : addWeeks(d, 1));
   const handleToday = () => setCurrentDate(new Date());
@@ -217,7 +217,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-graphite-950 text-white p-4 sm:p-6 md:p-10 lg:p-12 font-sans relative">
       <div className="max-w-7xl mx-auto relative z-10">
-        
+
         {/* Header Dashboard */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
           <div>
@@ -228,13 +228,13 @@ export default function AdminPage() {
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Panel de Turnos</h1>
             <p className="text-neutral-400 mt-2 text-sm">Visualizá y gestioná las reservas registradas en tiempo real.</p>
           </div>
-          
+
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <button 
-              onClick={handleLogout} 
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl hover:bg-red-500/20 transition-colors text-sm font-semibold"
+            <button
+              onClick={handleLogout}
+              className="flex-1 md:flex-none flex items-center justify-center cursor-pointer gap-2 px-5 py-2.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl hover:bg-red-500/20 transition-colors text-sm font-semibold"
             >
-              <LogOut className="h-4 w-4" /> 
+              <LogOut className="h-4 w-4" />
               Salir
             </button>
           </div>
@@ -243,42 +243,42 @@ export default function AdminPage() {
         {/* Controles de Filtro tipo Calendario */}
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex bg-neutral-950 rounded-xl p-1 border border-neutral-800">
-            <button 
-              onClick={() => setViewMode('semana')} 
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${viewMode === 'semana' ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
+            <button
+              onClick={() => setViewMode('semana')}
+              className={`px-4 py-2 rounded-lg text-sm cursor-pointer font-bold transition-colors ${viewMode === 'semana' ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
             >
               Semana
             </button>
-            <button 
-              onClick={() => setViewMode('mes')} 
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${viewMode === 'mes' ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
+            <button
+              onClick={() => setViewMode('mes')}
+              className={`px-4 py-2 rounded-lg text-sm cursor-pointer font-bold transition-colors ${viewMode === 'mes' ? 'bg-neutral-800 text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
             >
               Mes
             </button>
           </div>
 
           <div className="flex items-center gap-4">
-            <button onClick={handlePrev} className="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors" aria-label="Anterior">
+            <button onClick={handlePrev} className="p-2 bg-neutral-800 hover:bg-neutral-700 cursor-pointer rounded-lg transition-colors" aria-label="Anterior">
               <ChevronLeft className="h-5 w-5 text-neutral-300" />
             </button>
             <div className="w-48 text-center font-bold text-lg text-white">
               {getLabelFecha()}
             </div>
-            <button onClick={handleNext} className="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors" aria-label="Siguiente">
+            <button onClick={handleNext} className="p-2 bg-neutral-800 hover:bg-neutral-700 cursor-pointer rounded-lg transition-colors" aria-label="Siguiente">
               <ChevronRight className="h-5 w-5 text-neutral-300" />
             </button>
           </div>
 
           <div className="flex gap-2">
-            <button 
-              onClick={handleToday} 
-              className="px-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors text-sm font-semibold text-neutral-300"
+            <button
+              onClick={handleToday}
+              className="px-4 py-2 bg-neutral-800 border border-neutral-700 cursor-pointer rounded-lg hover:bg-neutral-700 transition-colors text-sm font-semibold text-neutral-300"
             >
               Hoy
             </button>
-            <button 
-              onClick={cargarTurnos} 
-              className="flex items-center gap-2 px-4 py-2 bg-lime-400/10 text-lime-400 border border-lime-400/20 rounded-lg hover:bg-lime-400/20 transition-colors text-sm font-semibold"
+            <button
+              onClick={cargarTurnos}
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer bg-lime-400/10 text-lime-400 border border-lime-400/20 rounded-lg hover:bg-lime-400/20 transition-colors text-sm font-semibold"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
@@ -359,7 +359,7 @@ export default function AdminPage() {
                         <td className="p-5 text-right">
                           <button
                             onClick={() => handleEliminarTurno(t.id)}
-                            className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors inline-flex"
+                            className="p-2 text-neutral-500 cursor-pointer hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors inline-flex"
                             title="Eliminar turno"
                           >
                             <Trash2 className="h-4 w-4" />
