@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kinetic Health Lab
 
-## Getting Started
+Landing page + sistema de reserva de turnos online para una clínica de kinesiología
+deportiva en La Plata.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Tailwind CSS 4** + **Framer Motion** (animaciones) + **lucide-react / react-icons**
+- **Supabase** (Postgres) para servicios, pacientes y turnos
+- **Resend** para los emails de confirmación
+
+## Funcionalidades
+
+- Landing con secciones: Hero, Servicios, Metodología, Equipo, Testimonios, FAQ, Ubicación.
+- Modal de reservas: elige servicio, día y horario (slots de 45 min, lun–vie 9 a 19 hs),
+  deshabilita los horarios ocupados y los que ya pasaron.
+- Validación en el servidor: días de atención, feriados, anticipación máxima, máximo de
+  turnos activos por paciente y rate limit por IP.
+- Email de confirmación al paciente (con link a Google Calendar y WhatsApp) y aviso a la clínica.
+- Botón flotante de WhatsApp y páginas legales (privacidad y términos).
+
+## Estructura
+
+```
+src/
+├── actions/          # Server actions ('use server'): reservas, horarios, servicios
+├── app/              # Rutas (App Router): home, páginas legales, layout, estilos, icono
+├── components/
+│   ├── booking/      # BookingProvider (contexto) + BookingModal
+│   ├── layout/       # Navbar, Footer
+│   ├── sections/     # Secciones de la landing
+│   └── ui/           # Componentes genéricos (FadeIn, WhatsAppButton)
+├── data/             # Contenido estático de la landing (tarjetas de servicios)
+├── lib/              # Lógica compartida: agenda, email, rate limit, cliente de Supabase
+└── types/            # Tipos compartidos (reflejan las tablas de Supabase)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La configuración de la agenda (horarios, días de atención, feriados, límites) está en
+[`src/lib/agenda.ts`](src/lib/agenda.ts) y la usan tanto el modal como el servidor.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crear un archivo `.env.local` en la raíz:
 
-## Learn More
+| Variable                        | Descripción                                          |
+| ------------------------------- | ---------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | URL del proyecto de Supabase                         |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key de Supabase                                 |
+| `RESEND_API_KEY`                | API key de Resend                                    |
+| `EMAIL_FROM`                    | Remitente, ej: `Kinetic <turnos@tudominio.com>`      |
+| `CLINICA_NOMBRE`                | Nombre que aparece en los emails                     |
+| `CLINICA_DIRECCION`             | Dirección (emails y Google Calendar)                 |
+| `CLINICA_WHATSAPP`              | Número de WhatsApp de la clínica                     |
+| `CLINICA_EMAIL`                 | Email que recibe el aviso de cada turno nuevo        |
 
-To learn more about Next.js, take a look at the following resources:
+## Base de datos (Supabase)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `servicios`: `id`, `nombre`, `descripcion`, `duracion_min`, `precio`, `activo`
+- `pacientes`: `id`, `nombre_completo`, `email` (único), `telefono`
+- `turnos`: `id`, `paciente_id`, `servicio_id`, `fecha_hora`, `estado`, `notas`
+  (el código espera una restricción única sobre el horario para evitar dobles reservas — error `23505`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> Para que "Agendar consulta" en una tarjeta preseleccione el servicio, el `nombre` en la
+> tabla `servicios` tiene que coincidir (o contener) el título de la tarjeta en
+> [`src/data/services.ts`](src/data/services.ts).
 
-## Deploy on Vercel
+## Desarrollo
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install
+npm run dev     # http://localhost:3000
+npm run lint
+npm run build
+```
