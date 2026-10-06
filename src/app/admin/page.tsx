@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { LogOut, RefreshCw, Calendar, User, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, RefreshCw, Calendar, User, Clock, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addMonths, subMonths, addWeeks, subWeeks, isSameMonth, isSameWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -114,6 +114,18 @@ export default function AdminPage() {
       console.error(error);
     }
     setLoading(false);
+  };
+
+  const handleEliminarTurno = async (id: string) => {
+    if (!window.confirm('¿Estás seguro de que querés eliminar este turno? La acción no se puede deshacer.')) return;
+    
+    const { error } = await supabase.from('turnos').delete().eq('id', id);
+    if (!error) {
+      setTurnos(prev => prev.filter(t => t.id !== id));
+    } else {
+      console.error('Error al eliminar:', error);
+      alert('Hubo un problema al intentar eliminar el turno.');
+    }
   };
 
   if (loading && !session) {
@@ -284,12 +296,13 @@ export default function AdminPage() {
                   <th className="p-5 font-bold">Contacto</th>
                   <th className="p-5 font-bold">Servicio</th>
                   <th className="p-5 font-bold">Estado</th>
+                  <th className="p-5 font-bold text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-800/60 text-sm">
                 {turnos.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="p-16 text-center">
+                    <td colSpan={6} className="p-16 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <Calendar className="h-10 w-10 text-neutral-700" />
                         <p className="text-neutral-500 font-medium">No hay turnos registrados en la base de datos.</p>
@@ -342,6 +355,15 @@ export default function AdminPage() {
                             }`}>
                             {t.estado}
                           </span>
+                        </td>
+                        <td className="p-5 text-right">
+                          <button
+                            onClick={() => handleEliminarTurno(t.id)}
+                            className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors inline-flex"
+                            title="Eliminar turno"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </td>
                       </tr>
                     );
