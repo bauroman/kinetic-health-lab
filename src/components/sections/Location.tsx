@@ -52,8 +52,7 @@ export default function Location() {
                   <div>
                     <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400">Horarios de Atención</h3>
                     <p className="text-sm font-semibold text-neutral-800 mt-1">Lunes a Viernes: 08:00 - 20:00 hs</p>
-                    <p className="text-sm font-semibold text-neutral-800">Sábados: 09:00 - 13:00 hs</p>
-                    <p className="text-xs text-neutral-400 mt-1">Domingos y feriados: Cerrado</p>
+                    <p className="text-xs text-neutral-400 mt-1">Fines de semana y feriados: Cerrado</p>
                   </div>
                 </div>
 
