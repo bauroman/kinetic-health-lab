@@ -32,9 +32,9 @@ export default function Hero() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_IMAGE}
-          alt="Atleta atándose las zapatillas antes de entrenar"
+          alt="Atleta entrenando en un gimnasio"
           // Porcentaje vertical bajo = se ve más la parte de arriba de la foto (evita cortar la cabeza bajo el navbar)
-          className="h-full w-full object-cover object-right lg:object-[right_50%]"
+          className="h-full w-full object-cover object-center lg:object-[right_50%]"
         />
 
         {/* 2. OVERLAY: solo oscurece donde está el texto */}
